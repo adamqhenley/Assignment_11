@@ -182,13 +182,18 @@ def buybook():
             if(booksStr != None):
                 #booksStr = booksToPurchase
                 booksList = booksStr.split(',')
+                bookListFiltered = []
                 booksDict = {}
                 for b in booksList:
                     if (b != ''):
+                        bookListFiltered.append(b)
                         booksDict[b] = True
                 booksDict[bookIdParam] = True
+                if(bookIdParam not in bookListFiltered):
+                    bookListFiltered.append(bookIdParam)
                 for b in books:
-                    if (str(b.id) in booksDict.keys):
+                    print(b['id'])
+                    if (str(b['id']) in bookListFiltered):
                         finalbookList.append(b)
                 booksStr = ''
                 for k in booksDict:
@@ -198,16 +203,17 @@ def buybook():
             else:
                 booksStr = bookIdParam + ','
                 for b in books:
-                    if (str(b.id) == bookIdParam):
+                    print(b['id'])
+                    if (str(b['id']) == bookIdParam):
                         finalbookList.append(b)
                 #booksList.append(bookIdParam)
-            response = make_response("<h1>Cookie added!</h1>")
+            response = make_response(render_template('buybook.html', booksToPurchase = finalbookList))
             response.set_cookie('booksToPurchase', booksStr)              
         except:
             response = make_response("<h1>Cookie Error (inner)</h1>")
     except:
         response = make_response("<h1>Cookie Error (outer)</h1>")
-    return render_template('buybook.html',response = response, booksToPurchase = finalbookList)
+    return response
 
 
 # def addCookie(name,contents):
